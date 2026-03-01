@@ -127,6 +127,6 @@
     @apply bg-background text-foreground;
     margin: 0 !important;
     padding: 0;
-    background: #0a0a1a;
+    background: #000000;
   }
 }

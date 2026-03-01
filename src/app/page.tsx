@@ -161,6 +161,53 @@ export default function Page() {
             </div>
           </div>
 
+          {/* ── IPHONE CHIPS ───────────────────────────── */}
+          <div className="anim-up" style={{ animationDelay: "0.04s", marginBottom: 32 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#ffffff", marginBottom: 16, letterSpacing: "-0.5px", fontFamily: "var(--font-syne), sans-serif", display: "flex", alignItems: "center", gap: 8 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#a1a1aa" }}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              iPhone Local AI Capabilities
+            </h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+              {[
+                { chip: "A16 Bionic", ram: "6 GB", phones: "iPhone 14 Pro, 15", maxModel: "1B–2B (Q4)", example: "TinyLlama, Qwen2.5 1.5B" },
+                { chip: "A17 Pro", ram: "8 GB", phones: "iPhone 15 Pro", maxModel: "3B–4B (Q4)", example: "Llama 3.2 3B, Phi-3 Mini" },
+                { chip: "A18 / A18 Pro", ram: "8 GB", phones: "iPhone 16 Series", maxModel: "3B–4B (Q4)", example: "Llama 3.2 3B (Faster T/s)" },
+              ].map(ip => (
+                <div key={ip.chip} style={{
+                  padding: "16px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 12,
+                  transition: "background 0.2s",
+                }}
+                  onMouseOver={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
+                  onMouseOut={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#ffffff" }}>{ip.chip}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#a1a1aa", background: "rgba(255,255,255,0.06)", padding: "2px 8px", borderRadius: 6 }}>
+                      {ip.ram} RAM
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#a1a1aa", marginBottom: 12 }}>{ip.phones}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ fontSize: 10, fontWeight: 800, color: "#4ade80", background: "rgba(74,222,128,0.15)", padding: "2px 6px", borderRadius: 4, letterSpacing: "0.05em" }}>
+                        MAX MODEL
+                      </span>
+                      <span style={{ fontSize: 13, color: "#e4e4e7", fontWeight: 600 }}>
+                        {ip.maxModel}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 12, color: "#a1a1aa", marginTop: 2 }}>
+                      e.g., {ip.example}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* ── CONTROLS ───────────────────────────────── */}
           <div className="anim-up" style={{ animationDelay: "0.08s", marginBottom: 16 }}>
             <div style={{

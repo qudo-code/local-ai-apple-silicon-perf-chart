@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  sqld:
+    image: ghcr.io/tursodatabase/libsql-server:latest
+    ports:
+      - '8080:8080'
+    volumes:
+      - sqld-data:/var/lib/sqld
+    environment:
+      - SQLD_NODE=primary
+
+volumes:
+  sqld-data:

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, JetBrains_Mono, Space_Grotesk, Syne } from "next/font/google";
+import "./globals.css";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -47,8 +48,8 @@ export default function RootLayout({
     }}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} ${spaceGrotesk.variable} ${syne.variable} antialiased`} style={{
-      margin: 0,
-    }}
+          margin: 0,
+        }}
       >
         {children}
       </body>

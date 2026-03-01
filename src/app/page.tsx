@@ -23,12 +23,13 @@ const chips = [
 type Chip = typeof chips[number];
 type Gen = Chip["gen"];
 
-const GC: Record<Gen, { color: string; dim: string; border: string }> = {
-  M1: { color: "#f87171", dim: "rgba(248,113,113,0.1)", border: "rgba(248,113,113,0.25)" },
-  M2: { color: "#fb923c", dim: "rgba(251,146,60,0.1)", border: "rgba(251,146,60,0.25)" },
-  M3: { color: "#facc15", dim: "rgba(250,204,21,0.1)", border: "rgba(250,204,21,0.25)" },
-  M4: { color: "#4ade80", dim: "rgba(74,222,128,0.1)", border: "rgba(74,222,128,0.25)" },
-  M5: { color: "#38bdf8", dim: "rgba(56,189,248,0.1)", border: "rgba(56,189,248,0.25)" },
+// Tailwind Standard Color Map
+const GC: Record<Gen, { text: string; bg: string; border: string; activeBg: string; activeBorder: string; hex: string }> = {
+  M1: { text: "text-red-400", bg: "bg-red-400/10", border: "border-red-400/25", activeBg: "bg-red-400/20", activeBorder: "border-red-400/50", hex: "#f87171" },
+  M2: { text: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/25", activeBg: "bg-orange-400/20", activeBorder: "border-orange-400/50", hex: "#fb923c" },
+  M3: { text: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/25", activeBg: "bg-yellow-400/20", activeBorder: "border-yellow-400/50", hex: "#facc15" },
+  M4: { text: "text-green-400", bg: "bg-green-400/10", border: "border-green-400/25", activeBg: "bg-green-400/20", activeBorder: "border-green-400/50", hex: "#4ade80" },
+  M5: { text: "text-sky-400", bg: "bg-sky-400/10", border: "border-sky-400/25", activeBg: "bg-sky-400/20", activeBorder: "border-sky-400/50", hex: "#38bdf8" },
 };
 
 const TIER_ORDER: Record<string, number> = { Base: 0, Pro: 1, Max: 2, Ultra: 3 };
@@ -87,74 +88,50 @@ export default function Page() {
         }
         .anim-up { opacity: 0; animation: fadeUp 0.55s cubic-bezier(0.16,1,0.3,1) forwards; }
         .bw-bar  { transform-origin: left; animation: barIn 0.65s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; }
-        .chip-row { transition: background 0.1s; }
-        .chip-row:hover { background: rgba(255,255,255,0.06) !important; }
-        .gen-pill { transition: all 0.12s; }
-        .gen-pill:hover { opacity: 1 !important; filter: brightness(1.2); }
       `}</style>
 
-      <div style={{
-        background: "#000000",
-        minHeight: "100vh",
-        color: "#f4f4f5",
-        fontFamily: "var(--font-jetbrains-mono), 'JetBrains Mono', monospace",
-        fontSize: 13,
-      }}>
-
+      <div className="bg-black min-h-screen text-zinc-100 font-mono text-[13px] overflow-hidden">
         {/* Grid texture */}
-        <div style={{
-          position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
-          `,
-          backgroundSize: "48px 48px",
-        }} />
+        <div
+          className="fixed inset-0 pointer-events-none z-0 bg-[length:48px_48px]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+            `,
+          }}
+        />
 
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 1240, margin: "0 auto", padding: "48px 24px 80px" }}>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-12 pb-20">
 
           {/* ── HEADER ─────────────────────────────────── */}
-          <div className="anim-up" style={{ animationDelay: "0s", marginBottom: 44 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24 }}>
+          <div className="anim-up mb-11" style={{ animationDelay: "0s" }}>
+            <div className="flex justify-between items-start flex-wrap gap-6">
               <div>
-                <div style={{ fontSize: 11, letterSpacing: "0.22em", color: "#a1a1aa", textTransform: "uppercase", marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#4ade80", animation: "pulse-dot 2.5s ease-in-out infinite" }} />
+                <div className="text-[11px] tracking-[0.22em] text-zinc-400 uppercase mb-2.5 flex items-center gap-2">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-[pulse-dot_2.5s_ease-in-out_infinite]" />
                   Local AI Reference · Feb 2026
                 </div>
-                <h1 style={{
-                  margin: 0,
-                  fontFamily: "var(--font-syne), sans-serif",
-                  fontSize: "clamp(32px, 5.5vw, 60px)",
-                  fontWeight: 800,
-                  letterSpacing: "-2px",
-                  lineHeight: 1.0,
-                  color: "#ffffff",
-                }}>
+                <h1 className="m-0 text-[clamp(2rem,5.5vw,3.75rem)] font-extrabold tracking-tighter leading-none text-white font-syne">
                    Silicon AI Perf
                 </h1>
-                <p style={{ fontSize: 13, color: "#a1a1aa", margin: "14px 0 0", letterSpacing: "0.02em", lineHeight: 1.5 }}>
+                <p className="text-[13px] text-zinc-400 mt-3.5 tracking-wide leading-relaxed">
                   Bandwidth (GB/s) determines inference speed · RAM determines max model size · Assumes Q4 quantization
                 </p>
               </div>
 
               {/* Key stats */}
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
+              <div className="flex gap-2 flex-wrap items-start">
                 {[
                   { label: "Chips", value: "16", sub: "across 5 gens" },
                   { label: "Max BW", value: "819 GB/s", sub: "M3 Ultra" },
                   { label: "Max RAM", value: "192 GB", sub: "M2/M3 Ultra" },
                   { label: "Latest", value: "M5", sub: "2025" },
                 ].map(s => (
-                  <div key={s.label} style={{
-                    padding: "10px 16px",
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 10,
-                    minWidth: 90,
-                  }}>
-                    <div style={{ fontSize: 11, color: "#a1a1aa", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: "#ffffff", letterSpacing: "-0.5px" }}>{s.value}</div>
-                    <div style={{ fontSize: 11, color: "#71717a", marginTop: 2 }}>{s.sub}</div>
+                  <div key={s.label} className="px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl min-w-[90px]">
+                    <div className="text-[11px] text-zinc-400 tracking-[0.15em] uppercase mb-1">{s.label}</div>
+                    <div className="text-lg font-bold text-white tracking-tight">{s.value}</div>
+                    <div className="text-[11px] text-zinc-500 mt-0.5">{s.sub}</div>
                   </div>
                 ))}
               </div>
@@ -162,44 +139,35 @@ export default function Page() {
           </div>
 
           {/* ── IPHONE CHIPS ───────────────────────────── */}
-          <div className="anim-up" style={{ animationDelay: "0.04s", marginBottom: 32 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#ffffff", marginBottom: 16, letterSpacing: "-0.5px", fontFamily: "var(--font-syne), sans-serif", display: "flex", alignItems: "center", gap: 8 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#a1a1aa" }}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          <div className="anim-up mb-8" style={{ animationDelay: "0.04s" }}>
+            <h2 className="text-lg font-bold text-white mb-4 tracking-tight flex items-center gap-2 font-syne">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
               iPhone Local AI Capabilities
             </h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-3">
               {[
                 { chip: "A16 Bionic", ram: "6 GB", phones: "iPhone 14 Pro, 15", maxModel: "1B–2B (Q4)", example: "TinyLlama, Qwen2.5 1.5B" },
                 { chip: "A17 Pro", ram: "8 GB", phones: "iPhone 15 Pro", maxModel: "3B–4B (Q4)", example: "Llama 3.2 3B, Phi-3 Mini" },
                 { chip: "A18 / A18 Pro", ram: "8 GB", phones: "iPhone 16 Series", maxModel: "3B–4B (Q4)", example: "Llama 3.2 3B (Faster T/s)" },
               ].map(ip => (
-                <div key={ip.chip} style={{
-                  padding: "16px",
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 12,
-                  transition: "background 0.2s",
-                }}
-                  onMouseOver={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
-                  onMouseOut={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#ffffff" }}>{ip.chip}</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#a1a1aa", background: "rgba(255,255,255,0.06)", padding: "2px 8px", borderRadius: 6 }}>
+                <div key={ip.chip} className="p-4 bg-white/5 border border-white/10 rounded-xl transition-colors duration-200 hover:bg-white/10 group">
+                  <div className="flex justify-between items-start mb-1.5">
+                    <div className="text-base font-bold text-white">{ip.chip}</div>
+                    <div className="text-xs font-bold text-zinc-400 bg-white/5 px-2 py-0.5 rounded-md border border-white/5 group-hover:border-white/10">
                       {ip.ram} RAM
                     </div>
                   </div>
-                  <div style={{ fontSize: 13, color: "#a1a1aa", marginBottom: 12 }}>{ip.phones}</div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <span style={{ fontSize: 10, fontWeight: 800, color: "#4ade80", background: "rgba(74,222,128,0.15)", padding: "2px 6px", borderRadius: 4, letterSpacing: "0.05em" }}>
+                  <div className="text-[13px] text-zinc-400 mb-3">{ip.phones}</div>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-extrabold text-green-400 bg-green-400/15 px-1.5 py-0.5 rounded-md tracking-[0.05em] border border-green-400/20">
                         MAX MODEL
                       </span>
-                      <span style={{ fontSize: 13, color: "#e4e4e7", fontWeight: 600 }}>
+                      <span className="text-[13px] text-zinc-200 font-semibold">
                         {ip.maxModel}
                       </span>
                     </div>
-                    <div style={{ fontSize: 12, color: "#a1a1aa", marginTop: 2 }}>
+                    <div className="text-xs text-zinc-400 mt-0.5">
                       e.g., {ip.example}
                     </div>
                   </div>
@@ -209,67 +177,53 @@ export default function Page() {
           </div>
 
           {/* ── CONTROLS ───────────────────────────────── */}
-          <div className="anim-up" style={{ animationDelay: "0.08s", marginBottom: 16 }}>
-            <div style={{
-              display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center",
-              padding: "10px 14px",
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: 12,
-            }}>
+          <div className="anim-up mb-4" style={{ animationDelay: "0.08s" }}>
+            <div className="flex gap-2 flex-wrap items-center p-2.5 px-3.5 bg-white/5 border border-white/10 rounded-xl">
               {(["All", "M1", "M2", "M3", "M4", "M5"] as const).map(g => {
                 const isAll = g === "All";
-                const color = isAll ? "#a1a1aa" : GC[g as Gen].color;
                 const active = filterGen === g;
+                const gc = isAll ? null : GC[g as Gen];
+
                 return (
-                  <button key={g} className="gen-pill" onClick={() => setFilterGen(g)} style={{
-                    padding: "4px 13px",
-                    borderRadius: 6,
-                    border: `1px solid ${active ? color + "80" : "transparent"}`,
-                    background: active ? color + "20" : "transparent",
-                    color: active ? color : "#a1a1aa",
-                    cursor: "pointer",
-                    fontSize: 13,
-                    fontFamily: "inherit",
-                    fontWeight: 600,
-                    opacity: active ? 1 : 0.8,
-                    letterSpacing: "0.03em",
-                  }}>
+                  <button
+                    key={g}
+                    onClick={() => setFilterGen(g)}
+                    className={`
+                      px-3 py-1 rounded-md text-[13px] font-semibold tracking-wide border transition-all duration-150
+                      ${active
+                        ? (isAll ? "bg-white/10 border-white/20 text-white" : `${gc?.text} ${gc?.activeBg} ${gc?.activeBorder}`)
+                        : "text-zinc-400 border-transparent bg-transparent hover:text-white hover:bg-white/5"
+                      }
+                    `}
+                  >
                     {g}
                   </button>
                 );
               })}
 
-              <div style={{ flex: 1 }} />
+              <div className="flex-1" />
 
-              <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{
-                padding: "6px 10px",
-                borderRadius: 6,
-                border: "1px solid rgba(255,255,255,0.15)",
-                background: "rgba(255,255,255,0.05)",
-                color: "#e4e4e7",
-                fontSize: 13,
-                fontFamily: "inherit",
-                cursor: "pointer",
-                outline: "none",
-              }}>
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                className="px-2.5 py-1.5 rounded-md border border-white/10 bg-white/5 text-zinc-200 text-[13px] cursor-pointer outline-none hover:border-white/20 transition-colors"
+              >
                 <option value="default">Sort: Generation</option>
                 <option value="bandwidth">Sort: Bandwidth ↓</option>
                 <option value="price">Sort: Price ↑</option>
                 <option value="value">Sort: Value Score ↓</option>
               </select>
 
-              <button onClick={() => setShowGuide(!showGuide)} style={{
-                padding: "6px 12px",
-                borderRadius: 6,
-                border: `1px solid ${showGuide ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.15)"}`,
-                background: showGuide ? "rgba(255,255,255,0.1)" : "transparent",
-                color: showGuide ? "#ffffff" : "#a1a1aa",
-                cursor: "pointer",
-                fontSize: 13,
-                fontFamily: "inherit",
-                transition: "all 0.12s",
-              }}>
+              <button
+                onClick={() => setShowGuide(!showGuide)}
+                className={`
+                  px-3 py-1.5 rounded-md text-[13px] border transition-all duration-150
+                  ${showGuide
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-transparent border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 hover:border-white/20"
+                  }
+                `}
+              >
                 {showGuide ? "Hide" : "Model"} Guide
               </button>
             </div>
@@ -277,28 +231,18 @@ export default function Page() {
 
           {/* ── MODEL GUIDE ────────────────────────────── */}
           {showGuide && (
-            <div className="anim-up" style={{ animationDelay: "0s", marginBottom: 16 }}>
-              <div style={{
-                padding: 16,
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 12,
-              }}>
-                <div style={{ fontSize: 11, letterSpacing: "0.18em", color: "#a1a1aa", textTransform: "uppercase", marginBottom: 12 }}>
+            <div className="anim-up mb-4" style={{ animationDelay: "0s" }}>
+              <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
+                <div className="text-[11px] tracking-[0.18em] text-zinc-400 uppercase mb-3">
                   Model Size → RAM Required (4-bit quantized)
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(175px, 1fr))", gap: 8 }}>
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(175px,1fr))] gap-2">
                   {modelGuide.map((m, i) => (
-                    <div key={i} style={{
-                      padding: "10px 12px",
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 8,
-                    }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>{m.size}</div>
-                      <div style={{ fontSize: 12, color: "#4ade80", margin: "3px 0" }}>~{m.ram}</div>
-                      <div style={{ fontSize: 12, color: "#e4e4e7", marginTop: 4, lineHeight: 1.4 }}>{m.example}</div>
-                      <div style={{ fontSize: 11, color: "#a1a1aa", marginTop: 2, fontStyle: "italic" }}>{m.use}</div>
+                    <div key={i} className="px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg">
+                      <div className="text-sm font-bold text-white">{m.size}</div>
+                      <div className="text-xs text-green-400 my-1">~{m.ram}</div>
+                      <div className="text-xs text-zinc-200 mt-1 leading-relaxed">{m.example}</div>
+                      <div className="text-[11px] text-zinc-400 mt-0.5 italic">{m.use}</div>
                     </div>
                   ))}
                 </div>
@@ -307,27 +251,16 @@ export default function Page() {
           )}
 
           {/* ── TABLE ──────────────────────────────────── */}
-          <div className="anim-up" style={{ animationDelay: "0.16s", marginBottom: 20 }}>
-            <div style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: 12,
-              overflow: "hidden",
-            }}>
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <div className="anim-up mb-5" style={{ animationDelay: "0.16s" }}>
+            <div className="border border-white/10 rounded-xl overflow-hidden bg-white/[0.02]">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
                   <thead>
-                    <tr style={{ background: "rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
+                    <tr className="bg-white/5 border-b border-white/10">
                       {["Chip", "RAM (GB)", "Bandwidth (GB/s)", "Max Model", "tok/s", "GPU", "TOPS", "Price", "Value", "Status"].map(h => (
-                        <th key={h} style={{
-                          padding: "11px 16px",
-                          textAlign: "left",
-                          fontSize: 11,
-                          fontWeight: 600,
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "#a1a1aa",
-                          whiteSpace: "nowrap",
-                        }}>{h}</th>
+                        <th key={h} className="px-4 py-3 text-left text-[11px] font-semibold tracking-[0.14em] uppercase text-zinc-400 whitespace-nowrap">
+                          {h}
+                        </th>
                       ))}
                     </tr>
                   </thead>
@@ -341,112 +274,90 @@ export default function Page() {
                       return (
                         <tr
                           key={`${c.gen}-${c.tier}`}
-                          className="chip-row"
-                          style={{
-                            borderBottom: "1px solid rgba(255,255,255,0.07)",
-                            background: isBest
-                              ? "rgba(74,222,128,0.08)"
-                              : i % 2 === 1
-                                ? "rgba(255,255,255,0.02)"
-                                : "transparent",
-                          }}
+                          className={`
+                            border-b border-white/5 transition-colors duration-100 hover:bg-white/10
+                            ${isBest ? "!bg-green-400/10 hover:!bg-green-400/20" : (i % 2 === 1 ? "bg-white/[0.01]" : "bg-transparent")}
+                          `}
                         >
                           {/* Chip name */}
-                          <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                              <div style={{ width: 3, height: 32, borderRadius: 2, background: gc.color, flexShrink: 0 }} />
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div className="flex items-center gap-2.5">
+                              <div className={`w-[3px] h-8 rounded-sm shrink-0 ${gc.bg.replace('/10', '')} bg-opacity-100`} style={{ backgroundColor: gc.hex }} />
                               <div>
-                                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "nowrap" }}>
-                                  <span style={{
-                                    fontSize: 11, fontWeight: 800, letterSpacing: "0.04em",
-                                    color: gc.color,
-                                    background: gc.dim,
-                                    border: `1px solid ${gc.border}`,
-                                    padding: "2px 7px", borderRadius: 4,
-                                  }}>{c.gen}</span>
-                                  <span style={{ fontWeight: 600, color: "#ffffff", fontSize: 13 }}>{c.tier}</span>
+                                <div className="flex items-center gap-2 flex-nowrap">
+                                  <span className={`text-[11px] font-extrabold tracking-wide ${gc.text} ${gc.bg} border ${gc.border} px-2 py-0.5 rounded-md`}>
+                                    {c.gen}
+                                  </span>
+                                  <span className="font-semibold text-white text-[13px]">{c.tier}</span>
                                   {isBest && (
-                                    <span style={{
-                                      fontSize: 10, fontWeight: 800, letterSpacing: "0.1em",
-                                      color: "#4ade80",
-                                      background: "rgba(74,222,128,0.15)",
-                                      border: "1px solid rgba(74,222,128,0.4)",
-                                      padding: "2px 6px", borderRadius: 4,
-                                    }}>BEST VALUE</span>
+                                    <span className="text-[10px] font-extrabold tracking-widest text-green-400 bg-green-400/15 border border-green-400/40 px-1.5 py-0.5 rounded-md">
+                                      BEST VALUE
+                                    </span>
                                   )}
                                 </div>
-                                <div style={{ fontSize: 11, color: "#71717a", marginTop: 4 }}>{c.year}</div>
+                                <div className="text-[11px] text-zinc-500 mt-1">{c.year}</div>
                               </div>
                             </div>
                           </td>
 
                           {/* RAM */}
-                          <td style={{ padding: "12px 16px", color: "#e4e4e7", fontWeight: 500 }}>{c.ram}</td>
+                          <td className="px-4 py-3 text-zinc-200 font-medium">{c.ram}</td>
 
                           {/* Bandwidth visual */}
-                          <td style={{ padding: "12px 16px", minWidth: 160 }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                              <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.1)", borderRadius: 2, overflow: "hidden" }}>
+                          <td className="px-4 py-3 min-w-[160px]">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex-1 h-1 bg-white/10 rounded-sm overflow-hidden">
                                 <div
-                                  className="bw-bar"
+                                  className="bw-bar h-full rounded-sm"
                                   style={{
-                                    height: "100%",
                                     width: `${bwPct}%`,
-                                    background: `linear-gradient(90deg, ${gc.color}, ${gc.color}88)`,
-                                    borderRadius: 2,
+                                    background: `linear-gradient(90deg, ${gc.hex}, ${gc.hex}88)`,
                                     animationDelay: `${0.18 + i * 0.035}s`,
                                   }}
                                 />
                               </div>
-                              <span style={{ fontWeight: 700, color: gc.color, fontSize: 13, minWidth: 36, textAlign: "right" }}>{c.bw}</span>
+                              <span className={`font-bold ${gc.text} text-[13px] min-w-[36px] text-right`}>
+                                {c.bw}
+                              </span>
                             </div>
                           </td>
 
                           {/* Max Model */}
-                          <td style={{ padding: "12px 16px", color: "#e4e4e7" }}>{c.maxModels}</td>
+                          <td className="px-4 py-3 text-zinc-200">{c.maxModels}</td>
 
                           {/* tok/s */}
-                          <td style={{ padding: "12px 16px", color: "#e4e4e7" }}>{c.tokS}</td>
+                          <td className="px-4 py-3 text-zinc-200">{c.tokS}</td>
 
                           {/* GPU */}
-                          <td style={{ padding: "12px 16px", color: "#a1a1aa" }}>{c.gpu}</td>
+                          <td className="px-4 py-3 text-zinc-400">{c.gpu}</td>
 
                           {/* TOPS */}
-                          <td style={{ padding: "12px 16px", color: "#a1a1aa" }}>{c.tops}</td>
+                          <td className="px-4 py-3 text-zinc-400">{c.tops}</td>
 
                           {/* Price */}
-                          <td style={{ padding: "12px 16px", color: "#ffffff", fontWeight: 500, whiteSpace: "nowrap" }}>{c.price}</td>
+                          <td className="px-4 py-3 text-white font-medium whitespace-nowrap">{c.price}</td>
 
                           {/* Value score */}
-                          <td style={{ padding: "12px 16px" }}>
-                            <span style={{
-                              fontWeight: 800, fontSize: 13,
-                              color: valScore > 20 ? "#4ade80" : valScore > 10 ? "#facc15" : "#f87171",
-                            }}>
+                          <td className="px-4 py-3">
+                            <span className={`
+                              font-extrabold text-[13px]
+                              ${valScore > 20 ? "text-green-400" : valScore > 10 ? "text-yellow-400" : "text-red-400"}
+                            `}>
                               {score(c)}
                             </span>
                           </td>
 
                           {/* Status */}
-                          <td style={{ padding: "12px 16px" }}>
-                            <span style={{
-                              fontSize: 11, padding: "3px 8px", borderRadius: 6, whiteSpace: "nowrap", fontWeight: 600,
-                              background: c.available === "New"
-                                ? "rgba(56,189,248,0.15)"
+                          <td className="px-4 py-3">
+                            <span className={`
+                              text-[11px] px-2 py-1 rounded-md whitespace-nowrap font-semibold border
+                              ${c.available === "New"
+                                ? "bg-sky-400/15 text-sky-400 border-sky-400/30"
                                 : c.available === "New/Refurb"
-                                  ? "rgba(251,146,60,0.15)"
-                                  : "rgba(255,255,255,0.06)",
-                              color: c.available === "New"
-                                ? "#38bdf8"
-                                : c.available === "New/Refurb"
-                                  ? "#fb923c"
-                                  : "#a1a1aa",
-                              border: `1px solid ${c.available === "New"
-                                ? "rgba(56,189,248,0.3)"
-                                : c.available === "New/Refurb"
-                                  ? "rgba(251,146,60,0.3)"
-                                  : "rgba(255,255,255,0.12)"}`,
-                            }}>
+                                  ? "bg-orange-400/15 text-orange-400 border-orange-400/30"
+                                  : "bg-white/5 text-zinc-400 border-white/10"
+                              }
+                            `}>
                               {c.available}
                             </span>
                           </td>
@@ -460,41 +371,31 @@ export default function Page() {
           </div>
 
           {/* ── INSIGHTS ───────────────────────────────── */}
-          <div className="anim-up" style={{ animationDelay: "0.24s", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, marginBottom: 36 }}>
+          <div className="anim-up grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3 mb-9" style={{ animationDelay: "0.24s" }}>
             {[
-              { tag: "VALUE", color: "#4ade80", title: "Best Bang for Buck", body: "M2 Ultra (used ~$3K) gives 800 GB/s and up to 192GB RAM — run 70B+ models at great speed." },
-              { tag: "PICK", color: "#38bdf8", title: "Sweet Spot Buy", body: "M4 Pro 48GB ($1,599+) — 273 GB/s, runs 14B–33B Q4 models smoothly. Best new-purchase value." },
-              { tag: "SPEED", color: "#f87171", title: "Speed King", body: "M4 Max 128GB ($3,999) — 546 GB/s, runs 70B models at 35–45 tok/s. Serious local AI." },
-              { tag: "THEORY", color: "#facc15", title: "The Key Metric", body: "Bandwidth (GB/s) = token generation speed. RAM = max model size. Bigger isn't always faster." },
+              { tag: "VALUE", color: "text-green-400", border: "border-t-green-400", bg: "bg-green-400/10", borderTag: "border-green-400/30", title: "Best Bang for Buck", body: "M2 Ultra (used ~$3K) gives 800 GB/s and up to 192GB RAM — run 70B+ models at great speed." },
+              { tag: "PICK", color: "text-sky-400", border: "border-t-sky-400", bg: "bg-sky-400/10", borderTag: "border-sky-400/30", title: "Sweet Spot Buy", body: "M4 Pro 48GB ($1,599+) — 273 GB/s, runs 14B–33B Q4 models smoothly. Best new-purchase value." },
+              { tag: "SPEED", color: "text-red-400", border: "border-t-red-400", bg: "bg-red-400/10", borderTag: "border-red-400/30", title: "Speed King", body: "M4 Max 128GB ($3,999) — 546 GB/s, runs 70B models at 35–45 tok/s. Serious local AI." },
+              { tag: "THEORY", color: "text-yellow-400", border: "border-t-yellow-400", bg: "bg-yellow-400/10", borderTag: "border-yellow-400/30", title: "The Key Metric", body: "Bandwidth (GB/s) = token generation speed. RAM = max model size. Bigger isn't always faster." },
             ].map((ins, i) => (
-              <div key={i} style={{
-                padding: "16px",
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                borderTop: `3px solid ${ins.color}`,
-                borderRadius: 12,
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                  <span style={{
-                    fontSize: 10, fontWeight: 800, letterSpacing: "0.12em",
-                    color: ins.color,
-                    border: `1px solid ${ins.color}55`,
-                    background: `${ins.color}15`,
-                    padding: "3px 8px", borderRadius: 4,
-                  }}>{ins.tag}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>{ins.title}</span>
+              <div key={i} className={`p-4 bg-white/5 border border-white/10 border-t-[3px] ${ins.border} rounded-xl`}>
+                <div className="flex items-center gap-2.5 mb-2.5">
+                  <span className={`text-[10px] font-extrabold tracking-[0.12em] ${ins.color} ${ins.bg} border ${ins.borderTag} px-2 py-0.5 rounded-md`}>
+                    {ins.tag}
+                  </span>
+                  <span className="text-[13px] font-bold text-white">{ins.title}</span>
                 </div>
-                <p style={{ margin: 0, fontSize: 13, color: "#d4d4d8", lineHeight: 1.6 }}>{ins.body}</p>
+                <p className="m-0 text-[13px] text-zinc-300 leading-relaxed">{ins.body}</p>
               </div>
             ))}
           </div>
 
           {/* ── FOOTER ─────────────────────────────────── */}
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 20, fontSize: 11, color: "#71717a", lineHeight: 1.8 }}>
+          <div className="border-t border-white/10 pt-5 text-[11px] text-zinc-500 leading-relaxed">
             tok/s estimates at max model size via llama.cpp or MLX. Smaller models run proportionally faster.
             Value score = (BW / min price) × 100. Prices reflect Feb 2026 new/refurb street prices.
             ~75% of unified memory available for GPU by default. M4 Ultra &amp; M5 Pro/Max/Ultra not yet released.
-            <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.06)", color: "#a1a1aa", fontWeight: 500 }}>
+            <div className="mt-3 pt-3 border-t border-white/5 text-zinc-400 font-medium">
               ⚠ Data aggregated via web search. Do your own research before purchasing — specs, pricing, and availability change frequently.
             </div>
           </div>

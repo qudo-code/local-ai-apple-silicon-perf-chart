@@ -2,354 +2,463 @@
 import { useState, useMemo } from "react";
 
 const chips = [
-  // M1 family
-  { gen: "M1", tier: "Base", ram: "8–16", bw: 68, price: "$428–999", priceMin: 428, maxModels: "7B", tokS: "~14", gpu: 8, neural: 16, tops: 11, year: 2020, available: "Used/Refurb" },
-  { gen: "M1", tier: "Pro", ram: "16–32", bw: 200, price: "$800–1200", priceMin: 800, maxModels: "13B", tokS: "~20–30", gpu: 16, neural: 16, tops: 11, year: 2021, available: "Used/Refurb" },
-  { gen: "M1", tier: "Max", ram: "32–64", bw: 400, price: "$1200–2000", priceMin: 1200, maxModels: "30B–33B", tokS: "~25–35", gpu: 32, neural: 16, tops: 11, year: 2021, available: "Used/Refurb" },
-  { gen: "M1", tier: "Ultra", ram: "64–128", bw: 800, price: "$2000–3500", priceMin: 2000, maxModels: "65B–70B", tokS: "~8–12", gpu: 64, neural: 32, tops: 22, year: 2022, available: "Used/Refurb" },
+  { gen: "M1", tier: "Base",  ram: "8–16",   bw: 68,  price: "$428–999",   priceMin: 428,  maxModels: "7B",       tokS: "~14",    gpu: 8,  tops: 11,   year: 2020, available: "Used/Refurb" },
+  { gen: "M1", tier: "Pro",   ram: "16–32",  bw: 200, price: "$800–1200",  priceMin: 800,  maxModels: "13B",      tokS: "~20–30", gpu: 16, tops: 11,   year: 2021, available: "Used/Refurb" },
+  { gen: "M1", tier: "Max",   ram: "32–64",  bw: 400, price: "$1200–2000", priceMin: 1200, maxModels: "30B–33B",  tokS: "~25–35", gpu: 32, tops: 11,   year: 2021, available: "Used/Refurb" },
+  { gen: "M1", tier: "Ultra", ram: "64–128", bw: 800, price: "$2000–3500", priceMin: 2000, maxModels: "65B–70B",  tokS: "~8–12",  gpu: 64, tops: 22,   year: 2022, available: "Used/Refurb" },
+  { gen: "M2", tier: "Base",  ram: "8–24",   bw: 100, price: "$670–899",   priceMin: 670,  maxModels: "7B–8B",    tokS: "~16",    gpu: 10, tops: 15.8, year: 2022, available: "Used/Refurb" },
+  { gen: "M2", tier: "Pro",   ram: "16–32",  bw: 200, price: "$1000–1500", priceMin: 1000, maxModels: "13B",      tokS: "~22–32", gpu: 19, tops: 15.8, year: 2023, available: "Used/Refurb" },
+  { gen: "M2", tier: "Max",   ram: "32–96",  bw: 400, price: "$1500–2500", priceMin: 1500, maxModels: "30B–65B",  tokS: "~28–38", gpu: 38, tops: 15.8, year: 2023, available: "Used/Refurb" },
+  { gen: "M2", tier: "Ultra", ram: "64–192", bw: 800, price: "$3000–5000", priceMin: 3000, maxModels: "70B–120B", tokS: "~10–15", gpu: 76, tops: 31.6, year: 2023, available: "Used/Refurb" },
+  { gen: "M3", tier: "Base",  ram: "8–24",   bw: 100, price: "$839–1099",  priceMin: 839,  maxModels: "7B–8B",    tokS: "~18",    gpu: 10, tops: 18,   year: 2023, available: "New/Refurb" },
+  { gen: "M3", tier: "Pro",   ram: "18–36",  bw: 150, price: "$1200–1800", priceMin: 1200, maxModels: "13B–14B",  tokS: "~24–30", gpu: 18, tops: 18,   year: 2023, available: "New/Refurb" },
+  { gen: "M3", tier: "Max",   ram: "36–128", bw: 400, price: "$2000–3500", priceMin: 2000, maxModels: "30B–70B",  tokS: "~30–40", gpu: 40, tops: 18,   year: 2023, available: "New/Refurb" },
+  { gen: "M3", tier: "Ultra", ram: "96–192", bw: 819, price: "$3999+",     priceMin: 3999, maxModels: "70B–120B", tokS: "~12–18", gpu: 80, tops: 36,   year: 2025, available: "New" },
+  { gen: "M4", tier: "Base",  ram: "16–32",  bw: 120, price: "$599–1299",  priceMin: 599,  maxModels: "8B–14B",   tokS: "~20",    gpu: 10, tops: 38,   year: 2024, available: "New" },
+  { gen: "M4", tier: "Pro",   ram: "24–64",  bw: 273, price: "$1399–2199", priceMin: 1399, maxModels: "14B–33B",  tokS: "~30–38", gpu: 20, tops: 38,   year: 2024, available: "New" },
+  { gen: "M4", tier: "Max",   ram: "36–128", bw: 546, price: "$2499–3999", priceMin: 2499, maxModels: "33B–70B",  tokS: "~35–45", gpu: 40, tops: 38,   year: 2024, available: "New" },
+  { gen: "M5", tier: "Base",  ram: "16–32",  bw: 154, price: "$1399–1799", priceMin: 1399, maxModels: "8B–14B",   tokS: "~25",    gpu: 10, tops: 45,   year: 2025, available: "New" },
+] as const;
 
-  // M2 family
-  { gen: "M2", tier: "Base", ram: "8–24", bw: 100, price: "$670–899", priceMin: 670, maxModels: "7B–8B", tokS: "~16", gpu: 10, neural: 16, tops: 15.8, year: 2022, available: "Used/Refurb" },
-  { gen: "M2", tier: "Pro", ram: "16–32", bw: 200, price: "$1000–1500", priceMin: 1000, maxModels: "13B", tokS: "~22–32", gpu: 19, neural: 16, tops: 15.8, year: 2023, available: "Used/Refurb" },
-  { gen: "M2", tier: "Max", ram: "32–96", bw: 400, price: "$1500–2500", priceMin: 1500, maxModels: "30B–65B", tokS: "~28–38", gpu: 38, neural: 16, tops: 15.8, year: 2023, available: "Used/Refurb" },
-  { gen: "M2", tier: "Ultra", ram: "64–192", bw: 800, price: "$3000–5000", priceMin: 3000, maxModels: "70B–120B", tokS: "~10–15", gpu: 76, neural: 32, tops: 31.6, year: 2023, available: "Used/Refurb" },
+type Chip = typeof chips[number];
+type Gen = Chip["gen"];
 
-  // M3 family
-  { gen: "M3", tier: "Base", ram: "8–24", bw: 100, price: "$839–1099", priceMin: 839, maxModels: "7B–8B", tokS: "~18", gpu: 10, neural: 16, tops: 18, year: 2023, available: "New/Refurb" },
-  { gen: "M3", tier: "Pro", ram: "18–36", bw: 150, price: "$1200–1800", priceMin: 1200, maxModels: "13B–14B", tokS: "~24–30", gpu: 18, neural: 16, tops: 18, year: 2023, available: "New/Refurb" },
-  { gen: "M3", tier: "Max", ram: "36–128", bw: 400, price: "$2000–3500", priceMin: 2000, maxModels: "30B–70B", tokS: "~30–40", gpu: 40, neural: 16, tops: 18, year: 2023, available: "New/Refurb" },
-  { gen: "M3", tier: "Ultra", ram: "96–192", bw: 819, price: "$3999+", priceMin: 3999, maxModels: "70B–120B", tokS: "~12–18", gpu: 80, neural: 32, tops: 36, year: 2025, available: "New" },
-
-  // M4 family
-  { gen: "M4", tier: "Base", ram: "16–32", bw: 120, price: "$599–1299", priceMin: 599, maxModels: "8B–14B", tokS: "~20", gpu: 10, neural: 16, tops: 38, year: 2024, available: "New" },
-  { gen: "M4", tier: "Pro", ram: "24–64", bw: 273, price: "$1399–2199", priceMin: 1399, maxModels: "14B–33B", tokS: "~30–38", gpu: 20, neural: 16, tops: 38, year: 2024, available: "New" },
-  { gen: "M4", tier: "Max", ram: "36–128", bw: 546, price: "$2499–3999", priceMin: 2499, maxModels: "33B–70B", tokS: "~35–45", gpu: 40, neural: 16, tops: 38, year: 2024, available: "New" },
-
-  // M5 family
-  { gen: "M5", tier: "Base", ram: "16–32", bw: 154, price: "$1399–1799", priceMin: 1399, maxModels: "8B–14B", tokS: "~25", gpu: 10, neural: 16, tops: 45, year: 2025, available: "New" },
-];
-
-const genColors = {
-  M1: { bg: "#1a1a2e", text: "#e94560", accent: "#e94560", ring: "rgba(233,69,96,0.15)" },
-  M2: { bg: "#1a1a2e", text: "#0f9b8e", accent: "#0f9b8e", ring: "rgba(15,155,142,0.15)" },
-  M3: { bg: "#1a1a2e", text: "#f5a623", accent: "#f5a623", ring: "rgba(245,166,35,0.15)" },
-  M4: { bg: "#1a1a2e", text: "#7b68ee", accent: "#7b68ee", ring: "rgba(123,104,238,0.15)" },
-  M5: { bg: "#1a1a2e", text: "#00d4ff", accent: "#00d4ff", ring: "rgba(0,212,255,0.15)" },
+const GC: Record<Gen, { color: string; dim: string; border: string }> = {
+  M1: { color: "#F87171", dim: "rgba(248,113,113,0.1)",  border: "rgba(248,113,113,0.25)" },
+  M2: { color: "#34D399", dim: "rgba(52,211,153,0.1)",   border: "rgba(52,211,153,0.25)"  },
+  M3: { color: "#FBBF24", dim: "rgba(251,191,36,0.1)",   border: "rgba(251,191,36,0.25)"  },
+  M4: { color: "#A78BFA", dim: "rgba(167,139,250,0.1)",  border: "rgba(167,139,250,0.25)" },
+  M5: { color: "#38BDF8", dim: "rgba(56,189,248,0.1)",   border: "rgba(56,189,248,0.25)"  },
 };
 
-const tierOrder = { Base: 0, Pro: 1, Max: 2, Ultra: 3 };
+const TIER_ORDER: Record<string, number> = { Base: 0, Pro: 1, Max: 2, Ultra: 3 };
+const MAX_BW = 819;
 
 const modelGuide = [
-  { size: "3B–7B", ram: "8 GB", example: "Llama 3.2 3B, Phi-3 Mini, Gemma 2B", use: "Fast chat, code completion" },
-  { size: "8B", ram: "8–16 GB", example: "Llama 3.1 8B, Mistral 7B, Qwen2 7B", use: "General assistant, coding" },
-  { size: "13B–14B", ram: "16–24 GB", example: "Llama 2 13B, Qwen2 14B", use: "Better reasoning, longer context" },
-  { size: "30B–33B", ram: "24–48 GB", example: "Qwen 30B MoE, CodeLlama 34B", use: "Near-GPT-3.5 quality" },
-  { size: "65B–70B", ram: "48–96 GB", example: "Llama 3.1 70B, Qwen2 72B", use: "Near-GPT-4 quality" },
-  { size: "120B+", ram: "128–192 GB", example: "Llama 3.1 405B (heavy Q), Falcon 180B", use: "Frontier-class, research" },
+  { size: "3B–7B",   ram: "8 GB",       example: "Llama 3.2 3B, Phi-3 Mini, Gemma 2B",    use: "Fast chat, code completion" },
+  { size: "8B",      ram: "8–16 GB",    example: "Llama 3.1 8B, Mistral 7B, Qwen2 7B",    use: "General assistant, coding" },
+  { size: "13B–14B", ram: "16–24 GB",   example: "Llama 2 13B, Qwen2 14B",                use: "Better reasoning, longer ctx" },
+  { size: "30B–33B", ram: "24–48 GB",   example: "Qwen 30B MoE, CodeLlama 34B",           use: "Near-GPT-3.5 quality" },
+  { size: "65B–70B", ram: "48–96 GB",   example: "Llama 3.1 70B, Qwen2 72B",             use: "Near-GPT-4 quality" },
+  { size: "120B+",   ram: "128–192 GB", example: "Llama 3.1 405B (Q), Falcon 180B",       use: "Frontier-class, research" },
 ];
 
-function getBwColor(bw: number) {
-  if (bw >= 800) return "#00ff88";
-  if (bw >= 500) return "#7bff7b";
-  if (bw >= 300) return "#b8e986";
-  if (bw >= 150) return "#f5d76e";
-  if (bw >= 100) return "#f7a541";
-  return "#e74c3c";
+function score(c: { bw: number; priceMin: number }) {
+  return ((c.bw / c.priceMin) * 100).toFixed(1);
 }
 
-function getValueScore(chip: { bw: number; priceMin: number }) {
-  return ((chip.bw / chip.priceMin) * 100).toFixed(1);
-}
-
-export default function AppleSiliconLLMChart() {
-  const [filterGen, setFilterGen] = useState("All");
+export default function Page() {
+  const [filterGen, setFilterGen] = useState<string>("All");
   const [sortBy, setSortBy] = useState("default");
   const [showGuide, setShowGuide] = useState(false);
 
   const filtered = useMemo(() => {
-    let result = filterGen === "All" ? [...chips] : chips.filter(c => c.gen === filterGen);
+    const result = filterGen === "All" ? [...chips] : chips.filter(c => c.gen === filterGen);
     if (sortBy === "bandwidth") result.sort((a, b) => b.bw - a.bw);
     else if (sortBy === "price") result.sort((a, b) => a.priceMin - b.priceMin);
-    else if (sortBy === "value") result.sort((a, b) => parseFloat(getValueScore(b)) - parseFloat(getValueScore(a)));
+    else if (sortBy === "value") result.sort((a, b) => parseFloat(score(b)) - parseFloat(score(a)));
     else result.sort((a, b) => {
-      const genDiff = parseInt(a.gen.slice(1)) - parseInt(b.gen.slice(1));
-      // @ts-expect-error
-      return genDiff !== 0 ? genDiff : tierOrder[a.tier] - tierOrder[b.tier];
+      const d = parseInt(a.gen.slice(1)) - parseInt(b.gen.slice(1));
+      return d !== 0 ? d : TIER_ORDER[a.tier] - TIER_ORDER[b.tier];
     });
     return result;
   }, [filterGen, sortBy]);
 
   const bestValue = useMemo(() => {
-    let best = null;
-    let bestScore = 0;
-    chips.forEach(c => {
-      const s = parseFloat(getValueScore(c));
-      if (s > bestScore) { bestScore = s; best = c; }
-    });
+    let best: Chip | null = null, top = 0;
+    chips.forEach(c => { const s = parseFloat(score(c)); if (s > top) { top = s; best = c; } });
     return best;
   }, []);
 
   return (
-    <div style={{
-      fontFamily: "'JetBrains Mono', 'SF Mono', 'Fira Code', monospace",
-      background: "linear-gradient(145deg, #0a0a1a 0%, #111128 50%, #0d0d20 100%)",
-      color: "#e0e0e0",
-      minHeight: "100vh",
-      padding: "24px 16px",
-    }}>
-      {/* Header */}
-      <div style={{ maxWidth: 1100, margin: "0 auto 24px" }}>
-        <h1 style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontSize: 28,
-          fontWeight: 700,
-          margin: 0,
-          background: "linear-gradient(90deg, #00d4ff, #7b68ee, #e94560)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          letterSpacing: "-0.5px",
-        }}>
-          Apple M-Chip × Local LLM Guide
-        </h1>
-        <p style={{ fontSize: 13, color: "#888", margin: "6px 0 0", fontWeight: 300 }}>
-          Memory bandwidth = LLM speed · RAM = max model size · All models assume 4-bit quantization (Q4)
-        </p>
-      </div>
+    <>
+      <style>{`
+        @keyframes barIn {
+          from { transform: scaleX(0); opacity: 0; }
+          to   { transform: scaleX(1); opacity: 1; }
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.3; }
+        }
+        .anim-up { opacity: 0; animation: fadeUp 0.55s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .bw-bar  { transform-origin: left; animation: barIn 0.65s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; }
+        .chip-row { transition: background 0.1s; }
+        .chip-row:hover { background: rgba(255,255,255,0.032) !important; }
+        .gen-pill { transition: all 0.12s; }
+        .gen-pill:hover { opacity: 1 !important; filter: brightness(1.1); }
+      `}</style>
 
-      {/* Controls */}
-      <div style={{ maxWidth: 1100, margin: "0 auto 16px", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-        {["All", "M1", "M2", "M3", "M4", "M5"].map(g => (
-            
-          <button key={g} onClick={() => setFilterGen(g)} style={{
-            padding: "6px 14px",
-            borderRadius: 6,
-            // @ts-expect-error
-            border: filterGen === g ? `1.5px solid ${g === "All" ? "#888" : genColors[g]?.accent}` : "1.5px solid #333",
-            // @ts-expect-error
-            background: filterGen === g ? (g === "All" ? "rgba(255,255,255,0.08)" : genColors[g]?.ring) : "transparent",
-            // @ts-expect-error
-            color: filterGen === g ? (g === "All" ? "#fff" : genColors[g]?.text) : "#777",
-            cursor: "pointer",
-            fontSize: 12,
-            fontFamily: "inherit",
-            fontWeight: 500,
-            transition: "all 0.15s",
-          }}>
-            {g}
-          </button>
-        ))}
+      <div style={{
+        background: "#080810",
+        minHeight: "100vh",
+        color: "#D4D4E8",
+        fontFamily: "var(--font-jetbrains-mono), 'JetBrains Mono', monospace",
+        fontSize: 12,
+      }}>
 
-        <div style={{ flex: 1 }} />
+        {/* Grid texture */}
+        <div style={{
+          position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)
+          `,
+          backgroundSize: "48px 48px",
+        }} />
 
-        <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{
-          padding: "6px 12px",
-          borderRadius: 6,
-          border: "1.5px solid #333",
-          background: "#111",
-          color: "#aaa",
-          fontSize: 12,
-          fontFamily: "inherit",
-          cursor: "pointer",
-        }}>
-          <option value="default">Sort: Generation</option>
-          <option value="bandwidth">Sort: Bandwidth ↓</option>
-          <option value="price">Sort: Price ↑</option>
-          <option value="value">Sort: Value Score ↓</option>
-        </select>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 1240, margin: "0 auto", padding: "48px 24px 80px" }}>
 
-        <button onClick={() => setShowGuide(!showGuide)} style={{
-          padding: "6px 14px",
-          borderRadius: 6,
-          border: "1.5px solid #444",
-          background: showGuide ? "rgba(255,255,255,0.08)" : "transparent",
-          color: "#aaa",
-          cursor: "pointer",
-          fontSize: 12,
-          fontFamily: "inherit",
-        }}>
-          {showGuide ? "Hide" : "Show"} Model Guide
-        </button>
-      </div>
-
-      {/* Model size guide */}
-      {showGuide && (
-        <div style={{ maxWidth: 1100, margin: "0 auto 16px" }}>
-          <div style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid #222",
-            borderRadius: 10,
-            padding: 16,
-            overflowX: "auto",
-          }}>
-            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10, color: "#ccc" }}>Model Size → RAM Needed (4-bit quantized)</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 8 }}>
-              {modelGuide.map((m, i) => (
-                <div key={i} style={{
-                  background: "rgba(255,255,255,0.03)",
-                  borderRadius: 8,
-                  padding: "10px 12px",
-                  border: "1px solid #1a1a1a",
-                }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{m.size}</div>
-                  <div style={{ fontSize: 11, color: "#7b68ee", marginTop: 2 }}>Needs ~{m.ram}</div>
-                  <div style={{ fontSize: 10, color: "#666", marginTop: 4 }}>{m.example}</div>
-                  <div style={{ fontSize: 10, color: "#555", marginTop: 2, fontStyle: "italic" }}>{m.use}</div>
+          {/* ── HEADER ─────────────────────────────────── */}
+          <div className="anim-up" style={{ animationDelay: "0s", marginBottom: 44 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 24 }}>
+              <div>
+                <div style={{ fontSize: 10, letterSpacing: "0.22em", color: "#3A3A55", textTransform: "uppercase", marginBottom: 10, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#34D399", animation: "pulse-dot 2.5s ease-in-out infinite" }} />
+                  Local AI Reference · Feb 2026
                 </div>
-              ))}
+                <h1 style={{
+                  margin: 0,
+                  fontFamily: "var(--font-syne), sans-serif",
+                  fontSize: "clamp(32px, 5.5vw, 60px)",
+                  fontWeight: 800,
+                  letterSpacing: "-2px",
+                  lineHeight: 1.0,
+                  color: "#E8E8F8",
+                }}>
+                  Apple Silicon
+                  <br />
+                  <span style={{
+                    background: "linear-gradient(100deg, #A78BFA 0%, #38BDF8 60%, #34D399 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}>× Local LLM</span>
+                </h1>
+                <p style={{ fontSize: 11, color: "#3D3D58", margin: "14px 0 0", letterSpacing: "0.02em", lineHeight: 1.5 }}>
+                  Bandwidth (GB/s) determines inference speed · RAM determines max model size · Assumes Q4 quantization
+                </p>
+              </div>
+
+              {/* Key stats */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
+                {[
+                  { label: "Chips", value: "16",         sub: "across 5 gens" },
+                  { label: "Max BW",  value: "819 GB/s", sub: "M3 Ultra" },
+                  { label: "Max RAM", value: "192 GB",   sub: "M2/M3 Ultra" },
+                  { label: "Latest",  value: "M5",       sub: "2025" },
+                ].map(s => (
+                  <div key={s.label} style={{
+                    padding: "10px 16px",
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    borderRadius: 10,
+                    minWidth: 90,
+                  }}>
+                    <div style={{ fontSize: 9, color: "#3A3A55", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#C8C8E0", letterSpacing: "-0.5px" }}>{s.value}</div>
+                    <div style={{ fontSize: 9, color: "#2E2E46", marginTop: 2 }}>{s.sub}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Table */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 4px", fontSize: 12 }}>
-          <thead>
-            <tr style={{ color: "#555", textTransform: "uppercase", fontSize: 10, letterSpacing: "0.8px" }}>
-              <th style={{ textAlign: "left", padding: "8px 12px" }}>Chip</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>RAM (GB)</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>BW (GB/s)</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>Max Model</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>~tok/s</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>GPU Cores</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>NE TOPS</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>Price Range</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>Value</th>
-              <th style={{ textAlign: "left", padding: "8px 10px" }}>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((c, i) => {
-                // @ts-expect-error
-              const col = genColors[c.gen];
-              const isBest = c === bestValue;
-              return (
-                <tr key={i} style={{
-                  background: isBest ? "rgba(0,255,136,0.04)" : "rgba(255,255,255,0.015)",
-                }}>
-                  <td style={{ padding: "10px 12px", fontWeight: 600, borderLeft: `3px solid ${col.accent}` }}>
-                    <span style={{ color: col.text }}>{c.gen}</span>
-                    <span style={{ color: "#999", marginLeft: 4 }}>{c.tier}</span>
-                    {isBest && <span style={{
-                      marginLeft: 6,
-                      fontSize: 9,
-                      background: "rgba(0,255,136,0.15)",
-                      color: "#00ff88",
-                      padding: "2px 6px",
-                      borderRadius: 4,
-                      fontWeight: 600,
-                    }}>BEST VALUE</span>}
-                  </td>
-                  <td style={{ padding: "10px" }}>{c.ram}</td>
-                  <td style={{ padding: "10px" }}>
-                    <span style={{ color: getBwColor(c.bw), fontWeight: 600 }}>{c.bw}</span>
-                    <div style={{
-                      marginTop: 3,
-                      height: 3,
-                      borderRadius: 2,
-                      background: "#1a1a1a",
-                      width: 60,
+          {/* ── CONTROLS ───────────────────────────────── */}
+          <div className="anim-up" style={{ animationDelay: "0.08s", marginBottom: 16 }}>
+            <div style={{
+              display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center",
+              padding: "10px 14px",
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 12,
+            }}>
+              {(["All", "M1", "M2", "M3", "M4", "M5"] as const).map(g => {
+                const isAll = g === "All";
+                const color = isAll ? "#8888AA" : GC[g as Gen].color;
+                const active = filterGen === g;
+                return (
+                  <button key={g} className="gen-pill" onClick={() => setFilterGen(g)} style={{
+                    padding: "4px 13px",
+                    borderRadius: 6,
+                    border: `1px solid ${active ? color + "60" : "transparent"}`,
+                    background: active ? color + "18" : "transparent",
+                    color: active ? color : "#3E3E5A",
+                    cursor: "pointer",
+                    fontSize: 12,
+                    fontFamily: "inherit",
+                    fontWeight: 600,
+                    opacity: active ? 1 : 0.9,
+                    letterSpacing: "0.03em",
+                  }}>
+                    {g}
+                  </button>
+                );
+              })}
+
+              <div style={{ flex: 1 }} />
+
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{
+                padding: "4px 10px",
+                borderRadius: 6,
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.04)",
+                color: "#666880",
+                fontSize: 11,
+                fontFamily: "inherit",
+                cursor: "pointer",
+                outline: "none",
+              }}>
+                <option value="default">Sort: Generation</option>
+                <option value="bandwidth">Sort: Bandwidth ↓</option>
+                <option value="price">Sort: Price ↑</option>
+                <option value="value">Sort: Value Score ↓</option>
+              </select>
+
+              <button onClick={() => setShowGuide(!showGuide)} style={{
+                padding: "4px 12px",
+                borderRadius: 6,
+                border: `1px solid ${showGuide ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.06)"}`,
+                background: showGuide ? "rgba(255,255,255,0.06)" : "transparent",
+                color: showGuide ? "#A0A0C0" : "#3E3E5A",
+                cursor: "pointer",
+                fontSize: 11,
+                fontFamily: "inherit",
+                transition: "all 0.12s",
+              }}>
+                {showGuide ? "Hide" : "Model"} Guide
+              </button>
+            </div>
+          </div>
+
+          {/* ── MODEL GUIDE ────────────────────────────── */}
+          {showGuide && (
+            <div className="anim-up" style={{ animationDelay: "0s", marginBottom: 16 }}>
+              <div style={{
+                padding: 16,
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 12,
+              }}>
+                <div style={{ fontSize: 9, letterSpacing: "0.18em", color: "#3A3A55", textTransform: "uppercase", marginBottom: 12 }}>
+                  Model Size → RAM Required (4-bit quantized)
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(175px, 1fr))", gap: 8 }}>
+                  {modelGuide.map((m, i) => (
+                    <div key={i} style={{
+                      padding: "10px 12px",
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 8,
                     }}>
-                      <div style={{
-                        height: "100%",
-                        borderRadius: 2,
-                        width: `${Math.min((c.bw / 820) * 100, 100)}%`,
-                        background: getBwColor(c.bw),
-                      }} />
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#D0D0E8" }}>{m.size}</div>
+                      <div style={{ fontSize: 10, color: "#A78BFA", margin: "3px 0" }}>~{m.ram}</div>
+                      <div style={{ fontSize: 9, color: "#38384E", marginTop: 4, lineHeight: 1.4 }}>{m.example}</div>
+                      <div style={{ fontSize: 9, color: "#2E2E44", marginTop: 2, fontStyle: "italic" }}>{m.use}</div>
                     </div>
-                  </td>
-                  <td style={{ padding: "10px", color: "#ddd" }}>{c.maxModels}</td>
-                  <td style={{ padding: "10px", color: "#bbb" }}>{c.tokS}</td>
-                  <td style={{ padding: "10px", color: "#888" }}>{c.gpu}</td>
-                  <td style={{ padding: "10px", color: "#888" }}>{c.tops}</td>
-                  <td style={{ padding: "10px", color: "#aaa", fontSize: 11 }}>{c.price}</td>
-                  <td style={{ padding: "10px" }}>
-                    <span style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: parseFloat(getValueScore(c)) > 20 ? "#00ff88" : parseFloat(getValueScore(c)) > 10 ? "#f5d76e" : "#e74c3c",
-                    }}>
-                      {getValueScore(c)}
-                    </span>
-                  </td>
-                  <td style={{ padding: "10px" }}>
-                    <span style={{
-                      fontSize: 10,
-                      padding: "2px 8px",
-                      borderRadius: 4,
-                      background: c.available === "New" ? "rgba(0,212,255,0.1)" : "rgba(255,255,255,0.05)",
-                      color: c.available === "New" ? "#00d4ff" : "#666",
-                      border: `1px solid ${c.available === "New" ? "rgba(0,212,255,0.2)" : "#222"}`,
-                    }}>
-                      {c.available}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
-      {/* Key Insights */}
-      <div style={{ maxWidth: 1100, margin: "20px auto 0" }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: 12,
-        }}>
-          <InsightCard
-            title="Best Bang for Buck"
-            emoji="💰"
-            text="M2 Ultra (used ~$3K) gives 800 GB/s bandwidth and up to 192GB RAM — run 70B+ models at great speed."
-            accent="#00ff88"
-          />
-          <InsightCard
-            title="Sweet Spot for Most"
-            emoji="⚡"
-            text="M4 Pro 48GB ($1,599+) — 273 GB/s, runs 14B–33B Q4 models smoothly. Best new-purchase value."
-            accent="#7b68ee"
-          />
-          <InsightCard
-            title="Speed King"
-            emoji="🏎️"
-            text="M4 Max 128GB ($3,999) — 546 GB/s lets you run 70B models at 35–45 tok/s. Serious local AI."
-            accent="#e94560"
-          />
-          <InsightCard
-            title="The Key Metric"
-            emoji="📐"
-            text="Memory bandwidth (GB/s) determines token generation speed. RAM determines max model size. Both matter."
-            accent="#f5a623"
-          />
+          {/* ── TABLE ──────────────────────────────────── */}
+          <div className="anim-up" style={{ animationDelay: "0.16s", marginBottom: 20 }}>
+            <div style={{
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: 12,
+              overflow: "hidden",
+            }}>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ background: "rgba(255,255,255,0.025)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                      {["Chip", "RAM (GB)", "Bandwidth (GB/s)", "Max Model", "tok/s", "GPU", "TOPS", "Price", "Value", "Status"].map(h => (
+                        <th key={h} style={{
+                          padding: "9px 14px",
+                          textAlign: "left",
+                          fontSize: 9,
+                          fontWeight: 600,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#30304A",
+                          whiteSpace: "nowrap",
+                        }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((c, i) => {
+                      const gc = GC[c.gen as Gen];
+                      const isBest = (c as Chip) === bestValue;
+                      const bwPct = Math.min((c.bw / MAX_BW) * 100, 100);
+                      const valScore = parseFloat(score(c));
+
+                      return (
+                        <tr
+                          key={`${c.gen}-${c.tier}`}
+                          className="chip-row"
+                          style={{
+                            borderBottom: "1px solid rgba(255,255,255,0.04)",
+                            background: isBest
+                              ? "rgba(52,211,153,0.035)"
+                              : i % 2 === 1
+                              ? "rgba(255,255,255,0.01)"
+                              : "transparent",
+                          }}
+                        >
+                          {/* Chip name */}
+                          <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                              <div style={{ width: 2, height: 32, borderRadius: 1, background: gc.color, flexShrink: 0 }} />
+                              <div>
+                                <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "nowrap" }}>
+                                  <span style={{
+                                    fontSize: 10, fontWeight: 700, letterSpacing: "0.04em",
+                                    color: gc.color,
+                                    background: gc.dim,
+                                    border: `1px solid ${gc.border}`,
+                                    padding: "1px 7px", borderRadius: 4,
+                                  }}>{c.gen}</span>
+                                  <span style={{ fontWeight: 600, color: "#B8B8D4", fontSize: 12 }}>{c.tier}</span>
+                                  {isBest && (
+                                    <span style={{
+                                      fontSize: 8, fontWeight: 700, letterSpacing: "0.1em",
+                                      color: "#34D399",
+                                      background: "rgba(52,211,153,0.1)",
+                                      border: "1px solid rgba(52,211,153,0.3)",
+                                      padding: "1px 5px", borderRadius: 3,
+                                    }}>BEST VALUE</span>
+                                  )}
+                                </div>
+                                <div style={{ fontSize: 9, color: "#2E2E46", marginTop: 3 }}>{c.year}</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* RAM */}
+                          <td style={{ padding: "11px 14px", color: "#666880" }}>{c.ram}</td>
+
+                          {/* Bandwidth visual */}
+                          <td style={{ padding: "11px 14px", minWidth: 160 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                              <div style={{ flex: 1, height: 3, background: "rgba(255,255,255,0.05)", borderRadius: 2, overflow: "hidden" }}>
+                                <div
+                                  className="bw-bar"
+                                  style={{
+                                    height: "100%",
+                                    width: `${bwPct}%`,
+                                    background: `linear-gradient(90deg, ${gc.color}, ${gc.color}55)`,
+                                    borderRadius: 2,
+                                    animationDelay: `${0.18 + i * 0.035}s`,
+                                  }}
+                                />
+                              </div>
+                              <span style={{ fontWeight: 700, color: gc.color, fontSize: 12, minWidth: 32, textAlign: "right" }}>{c.bw}</span>
+                            </div>
+                          </td>
+
+                          {/* Max Model */}
+                          <td style={{ padding: "11px 14px", color: "#9090B0" }}>{c.maxModels}</td>
+
+                          {/* tok/s */}
+                          <td style={{ padding: "11px 14px", color: "#585870" }}>{c.tokS}</td>
+
+                          {/* GPU */}
+                          <td style={{ padding: "11px 14px", color: "#484860" }}>{c.gpu}</td>
+
+                          {/* TOPS */}
+                          <td style={{ padding: "11px 14px", color: "#484860" }}>{c.tops}</td>
+
+                          {/* Price */}
+                          <td style={{ padding: "11px 14px", color: "#666880", whiteSpace: "nowrap" }}>{c.price}</td>
+
+                          {/* Value score */}
+                          <td style={{ padding: "11px 14px" }}>
+                            <span style={{
+                              fontWeight: 700, fontSize: 12,
+                              color: valScore > 20 ? "#34D399" : valScore > 10 ? "#FBBF24" : "#F87171",
+                            }}>
+                              {score(c)}
+                            </span>
+                          </td>
+
+                          {/* Status */}
+                          <td style={{ padding: "11px 14px" }}>
+                            <span style={{
+                              fontSize: 10, padding: "2px 8px", borderRadius: 4, whiteSpace: "nowrap",
+                              background: c.available === "New"
+                                ? "rgba(56,189,248,0.1)"
+                                : c.available === "New/Refurb"
+                                ? "rgba(167,139,250,0.1)"
+                                : "rgba(255,255,255,0.04)",
+                              color: c.available === "New"
+                                ? "#38BDF8"
+                                : c.available === "New/Refurb"
+                                ? "#A78BFA"
+                                : "#484860",
+                              border: `1px solid ${c.available === "New"
+                                ? "rgba(56,189,248,0.22)"
+                                : c.available === "New/Refurb"
+                                ? "rgba(167,139,250,0.22)"
+                                : "rgba(255,255,255,0.06)"}`,
+                            }}>
+                              {c.available}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* ── INSIGHTS ───────────────────────────────── */}
+          <div className="anim-up" style={{ animationDelay: "0.24s", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 36 }}>
+            {[
+              { tag: "VALUE",  color: "#34D399", title: "Best Bang for Buck",   body: "M2 Ultra (used ~$3K) gives 800 GB/s and up to 192GB RAM — run 70B+ models at great speed." },
+              { tag: "PICK",   color: "#A78BFA", title: "Sweet Spot Buy",        body: "M4 Pro 48GB ($1,599+) — 273 GB/s, runs 14B–33B Q4 models smoothly. Best new-purchase value." },
+              { tag: "SPEED",  color: "#F87171", title: "Speed King",            body: "M4 Max 128GB ($3,999) — 546 GB/s, runs 70B models at 35–45 tok/s. Serious local AI." },
+              { tag: "THEORY", color: "#FBBF24", title: "The Key Metric",        body: "Bandwidth (GB/s) = token generation speed. RAM = max model size. Bigger isn't always faster." },
+            ].map((ins, i) => (
+              <div key={i} style={{
+                padding: "14px 16px",
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderTop: `2px solid ${ins.color}`,
+                borderRadius: 10,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <span style={{
+                    fontSize: 8, fontWeight: 700, letterSpacing: "0.12em",
+                    color: ins.color,
+                    border: `1px solid ${ins.color}44`,
+                    padding: "2px 6px", borderRadius: 3,
+                  }}>{ins.tag}</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#B8B8D4" }}>{ins.title}</span>
+                </div>
+                <p style={{ margin: 0, fontSize: 11, color: "#484860", lineHeight: 1.6 }}>{ins.body}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* ── FOOTER ─────────────────────────────────── */}
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 16, fontSize: 10, color: "#2A2A3E", lineHeight: 1.8 }}>
+            tok/s estimates at max model size via llama.cpp or MLX. Smaller models run proportionally faster.
+            Value score = (BW / min price) × 100. Prices reflect Feb 2026 new/refurb street prices.
+            ~75% of unified memory available for GPU by default. M4 Ultra &amp; M5 Pro/Max/Ultra not yet released.
+            <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.03)", color: "#222233" }}>
+              ⚠ Data aggregated via Claude web search. Do your own research before purchasing — specs, pricing, and availability change frequently.
+            </div>
+          </div>
+
         </div>
       </div>
-
-      {/* Footer */}
-      <div style={{ maxWidth: 1100, margin: "20px auto 0", fontSize: 10, color: "#444", lineHeight: 1.6 }}>
-        <p>
-          <strong style={{ color: "#555" }}>Notes:</strong> Token/s estimates are for the max model size at Q4 quantization using llama.cpp or MLX. Smaller models run faster.
-          Value score = (bandwidth / min price) × 100. Prices reflect Feb 2026 new/refurb street prices. M5 Pro/Max/Ultra not yet released.
-          ~75% of unified memory is available for GPU by default. The M4 Ultra has not been released.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function InsightCard({ title, emoji, text, accent }: { title: string; emoji: string; text: string; accent: string }) {
-  return (
-    <div style={{
-      background: "rgba(255,255,255,0.02)",
-      border: `1px solid ${accent}22`,
-      borderRadius: 10,
-      padding: "14px 16px",
-      borderLeft: `3px solid ${accent}`,
-    }}>
-      <div style={{ fontSize: 13, fontWeight: 600, color: accent, marginBottom: 6 }}>
-        {emoji} {title}
-      </div>
-      <div style={{ fontSize: 11, color: "#999", lineHeight: 1.5 }}>{text}</div>
-    </div>
+    </>
   );
 }

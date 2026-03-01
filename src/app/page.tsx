@@ -130,13 +130,13 @@ export default function Page() {
                   lineHeight: 1.0,
                   color: "#E8E8F8",
                 }}>
-                  Apple Silicon
+                   Silicon AI Perf
                   <br />
-                  <span style={{
+                  {/* <span style={{
                     background: "linear-gradient(100deg, #A78BFA 0%, #38BDF8 60%, #34D399 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                  }}>× Local LLM</span>
+                  }}>× Local LLM</span> */}
                 </h1>
                 <p style={{ fontSize: 11, color: "#3D3D58", margin: "14px 0 0", letterSpacing: "0.02em", lineHeight: 1.5 }}>
                   Bandwidth (GB/s) determines inference speed · RAM determines max model size · Assumes Q4 quantization

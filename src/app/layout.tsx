@@ -32,8 +32,8 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "M chip perf chart",
-  description: "",
+  title: "mperf",
+  description: "Apple Silicon AI performance",
 };
 
 export default function RootLayout({

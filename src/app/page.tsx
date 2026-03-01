@@ -48,7 +48,7 @@ const modelGuide = [
   { size: "120B+", ram: "128–192 GB", example: "Llama 3.1 405B (heavy Q), Falcon 180B", use: "Frontier-class, research" },
 ];
 
-function getBwColor(bw) {
+function getBwColor(bw: number) {
   if (bw >= 800) return "#00ff88";
   if (bw >= 500) return "#7bff7b";
   if (bw >= 300) return "#b8e986";
@@ -57,7 +57,7 @@ function getBwColor(bw) {
   return "#e74c3c";
 }
 
-function getValueScore(chip) {
+function getValueScore(chip: { bw: number; priceMin: number }) {
   return ((chip.bw / chip.priceMin) * 100).toFixed(1);
 }
 
@@ -73,6 +73,7 @@ export default function AppleSiliconLLMChart() {
     else if (sortBy === "value") result.sort((a, b) => parseFloat(getValueScore(b)) - parseFloat(getValueScore(a)));
     else result.sort((a, b) => {
       const genDiff = parseInt(a.gen.slice(1)) - parseInt(b.gen.slice(1));
+      // @ts-expect-error
       return genDiff !== 0 ? genDiff : tierOrder[a.tier] - tierOrder[b.tier];
     });
     return result;
@@ -118,11 +119,15 @@ export default function AppleSiliconLLMChart() {
       {/* Controls */}
       <div style={{ maxWidth: 1100, margin: "0 auto 16px", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
         {["All", "M1", "M2", "M3", "M4", "M5"].map(g => (
+            
           <button key={g} onClick={() => setFilterGen(g)} style={{
             padding: "6px 14px",
             borderRadius: 6,
+            // @ts-expect-error
             border: filterGen === g ? `1.5px solid ${g === "All" ? "#888" : genColors[g]?.accent}` : "1.5px solid #333",
+            // @ts-expect-error
             background: filterGen === g ? (g === "All" ? "rgba(255,255,255,0.08)" : genColors[g]?.ring) : "transparent",
+            // @ts-expect-error
             color: filterGen === g ? (g === "All" ? "#fff" : genColors[g]?.text) : "#777",
             cursor: "pointer",
             fontSize: 12,
@@ -215,6 +220,7 @@ export default function AppleSiliconLLMChart() {
           </thead>
           <tbody>
             {filtered.map((c, i) => {
+                // @ts-expect-error
               const col = genColors[c.gen];
               const isBest = c === bestValue;
               return (
@@ -331,7 +337,7 @@ export default function AppleSiliconLLMChart() {
   );
 }
 
-function InsightCard({ title, emoji, text, accent }) {
+function InsightCard({ title, emoji, text, accent }: { title: string; emoji: string; text: string; accent: string }) {
   return (
     <div style={{
       background: "rgba(255,255,255,0.02)",
